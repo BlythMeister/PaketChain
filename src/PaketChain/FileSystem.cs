@@ -39,7 +39,7 @@ namespace PaketChain
 
             var (_, output) = ConsoleHelper.RunDotNetCommand(rootDir, "tool list", cancellationToken);
 
-            if (output.Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
+            if (output != null && output.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
             {
                 return "dotnet";
             }
