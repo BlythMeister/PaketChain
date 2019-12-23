@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "PaketChain": {
+      "commandName": "Project",
+      "commandLineArgs": "-help",
+      "workingDirectory": "F:\\Git\\PaketChain"
+    }
+  }
+}
