@@ -61,11 +61,16 @@ namespace PaketChain
         {
             var rootDir = string.IsNullOrWhiteSpace(runnerArgs.Directory) ? Environment.CurrentDirectory : runnerArgs.Directory;
             FileSystem.ValidatePaths(rootDir);
-            var (paketPath, toolType) = FileSystem.LocatePaketFilePath(rootDir, cancellationToken);
-
             Console.WriteLine($"Running against: {rootDir}");
             Console.WriteLine("-----------------------------------------------------");
             if (cancellationToken.IsCancellationRequested) return -2;
+
+            Console.WriteLine("Running tool restore");
+            ConsoleHelper.RunDotNetCommand(rootDir, "tool restore", cancellationToken);
+            Console.WriteLine("-----------------------------------------------------");
+            if (cancellationToken.IsCancellationRequested) return -2;
+
+            var (paketPath, toolType) = FileSystem.LocatePaketFilePath(rootDir, cancellationToken);
 
             if (runnerArgs.UpdateTool)
             {
