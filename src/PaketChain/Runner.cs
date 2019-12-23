@@ -61,7 +61,7 @@ namespace PaketChain
         {
             var rootDir = string.IsNullOrWhiteSpace(runnerArgs.Directory) ? Environment.CurrentDirectory : runnerArgs.Directory;
             FileSystem.ValidatePaths(rootDir);
-            var paketPath = FileSystem.LocatePaketFilePath(rootDir, cancellationToken);
+            var (paketPath, toolType) = FileSystem.LocatePaketFilePath(rootDir, cancellationToken);
 
             Console.WriteLine($"Running against: {rootDir}");
             Console.WriteLine("-----------------------------------------------------");
@@ -79,7 +79,7 @@ namespace PaketChain
 
             if (runnerArgs.ClearCache)
             {
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, "clear-cache", "--clear-local", cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "clear-cache", "--clear-local", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
@@ -105,21 +105,21 @@ namespace PaketChain
             }
             else if (runnerArgs.Update)
             {
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, "update", runnerArgs.UpdateArgs, cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "update", runnerArgs.UpdateArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
             if (runnerArgs.Simplify)
             {
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, "simplify", runnerArgs.SimplifyArgs, cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "simplify", runnerArgs.SimplifyArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
             if (runnerArgs.Install)
             {
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, "install", runnerArgs.InstallArgs, cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", runnerArgs.InstallArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }

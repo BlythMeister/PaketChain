@@ -41,13 +41,23 @@ namespace PaketChain
             return (process.ExitCode, output);
         }
 
-        public static void RunPaketCommand(string rootDir, string paketExePath, string command, string args, CancellationToken cancellationToken)
+        public static void RunPaketCommand(string rootDir, string paketExePath, PaketType paketType, string command, string args, CancellationToken cancellationToken)
         {
-            var arguments = $"{command} {args ?? string.Empty}".Trim();
+            var arguments = string.Empty;
 
-            if (paketExePath.Equals("dotnet", StringComparison.CurrentCultureIgnoreCase))
+            switch (paketType)
             {
-                arguments = $"paket {arguments}";
+                case PaketType.Exe:
+                case PaketType.GlobalTool:
+                    arguments = $"{command} {args ?? string.Empty}".Trim();
+                    break;
+
+                case PaketType.LocalTool:
+                    arguments = $"paket {command} {args ?? string.Empty}".Trim();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(paketType), paketType, null);
             }
 
             var processInfo = new ProcessStartInfo

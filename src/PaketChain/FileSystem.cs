@@ -30,18 +30,25 @@ namespace PaketChain
             }
         }
 
-        public static string LocatePaketFilePath(string rootDir, CancellationToken cancellationToken)
+        public static (string path, PaketType type) LocatePaketFilePath(string rootDir, CancellationToken cancellationToken)
         {
             if (Directory.Exists(Path.Combine(rootDir, ".paket")) && File.Exists(Path.Combine(rootDir, ".paket", "paket.exe")))
             {
-                return Path.Combine(rootDir, ".paket", "paket.exe");
+                return (Path.Combine(rootDir, ".paket", "paket.exe"), PaketType.Exe);
             }
 
             var (_, output) = ConsoleHelper.RunDotNetCommand(rootDir, "tool list", cancellationToken);
 
             if (output != null && output.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
             {
-                return "dotnet";
+                return ("dotnet", PaketType.LocalTool);
+            }
+
+            var (_, outputGlobal) = ConsoleHelper.RunDotNetCommand(rootDir, "tool list --global", cancellationToken);
+
+            if (output != null && output.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                return ("paket", PaketType.GlobalTool);
             }
 
             throw new FileNotFoundException("Unable to locate paket");
