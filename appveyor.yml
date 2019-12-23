@@ -19,7 +19,7 @@ build_script:
 - cmd: >-
     dotnet tool restore
     
-    dotnet pack src\PaketChain.sln --configuration Release /p:PublishSingleFile=true /p:DebugType=None
+    dotnet pack src\PaketChain.sln --configuration Release
 test: off
 artifacts:
 - path: src\PaketChain\nupkg\PaketChain.$(appveyor_build_version).nupkg
