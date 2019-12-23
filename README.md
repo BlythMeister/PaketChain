@@ -1,7 +1,8 @@
 # Paket Chain
 
-[![Release](https://img.shields.io/github/release/BlythMeister/PaketChain.svg?style=flat)](https://github.com/BlythMeister/PaketSorter/releases/latest)
-[![Issues](https://img.shields.io/github/issues/BlythMeister/PaketChain.svg?style=flat)](https://github.com/BlythMeister/PaketSorter/issues)
+![AppVeyor branch](https://img.shields.io/appveyor/ci/blythmeister/paketchain/master)
+![Nuget](https://img.shields.io/nuget/v/paketchain)
+![GitHub issues](https://img.shields.io/github/issues-raw/blythmeister/paketchain)
 
 A command line application call paket in standard folder structures and chain multiple commands together.
 
@@ -9,7 +10,9 @@ With added ability to sort dependencies and references files alphabetically prio
 
 # Installation
 
-TODO
+Run `dotnet tool install --global PaketChain` to install.
+
+To update, run `dotnet tool update --global PaketChain`
 
 # Usage
 
