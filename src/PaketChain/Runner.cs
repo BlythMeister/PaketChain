@@ -67,6 +67,26 @@ namespace PaketChain
             Console.WriteLine("-----------------------------------------------------");
             if (cancellationToken.IsCancellationRequested) return -2;
 
+            if (runnerArgs.UpdateTool)
+            {
+                switch (toolType)
+                {
+                    case PaketType.LocalTool:
+                        ConsoleHelper.RunDotNetCommand(rootDir, "tool update paket", cancellationToken);
+                        break;
+
+                    case PaketType.GlobalTool:
+                        ConsoleHelper.RunDotNetCommand(rootDir, "tool update paket --global", cancellationToken);
+                        break;
+
+                    default:
+                        Console.WriteLine("Cannot update local exe using paket chain");
+                        break;
+                }
+                Console.WriteLine("-----------------------------------------------------");
+                if (cancellationToken.IsCancellationRequested) return -2;
+            }
+
             if (runnerArgs.Sort)
             {
                 Sorter.SortReferences(rootDir);

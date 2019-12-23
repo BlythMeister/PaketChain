@@ -8,6 +8,9 @@ namespace PaketChain
         [Option("-d|--dir <PATH>", "The path to a root of a repository, defaults to current directory if not provided (Note: <PATH> should be in quotes)", CommandOptionType.SingleValue)]
         public string Directory { get; }
 
+        [Option("-upt|--update-paket-tool", "update the paket tool", CommandOptionType.NoValue)]
+        public bool UpdateTool { get; }
+
         [Option("-u|--update", "Include a paket update", CommandOptionType.NoValue)]
         public bool Update { get; }
 
