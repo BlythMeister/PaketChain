@@ -33,7 +33,6 @@ namespace PaketChain
 
             cancellationToken.Register(() => process.Kill(true));
 
-            Console.WriteLine($"Running: {processInfo.FileName} {processInfo.Arguments}");
             process.Start();
             process.BeginOutputReadLine();
             process.WaitForExit();

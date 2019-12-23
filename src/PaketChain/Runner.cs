@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 namespace PaketChain
@@ -61,8 +60,8 @@ namespace PaketChain
         private static int Run(RunnerArgs runnerArgs, CancellationToken cancellationToken)
         {
             var rootDir = string.IsNullOrWhiteSpace(runnerArgs.Directory) ? Environment.CurrentDirectory : runnerArgs.Directory;
-            ValidatePaths(rootDir);
-            var paketPath = LocatePaketFilePath(rootDir, cancellationToken);
+            FileSystem.ValidatePaths(rootDir);
+            var paketPath = FileSystem.LocatePaketFilePath(rootDir, cancellationToken);
 
             Console.WriteLine($"Running against: {rootDir}");
             Console.WriteLine("-----------------------------------------------------");
@@ -87,7 +86,7 @@ namespace PaketChain
 
             if (runnerArgs.CleanObj)
             {
-                Cleaner.CleanObjFiles(rootDir);
+                FileSystem.CleanObjFiles(rootDir);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
@@ -126,31 +125,6 @@ namespace PaketChain
             }
 
             return 0;
-        }
-
-        private static void ValidatePaths(string rootDir)
-        {
-            if (!Directory.Exists(rootDir))
-            {
-                throw new DirectoryNotFoundException($"Unable to locate directory {rootDir}");
-            }
-        }
-
-        private static string LocatePaketFilePath(string rootDir, CancellationToken cancellationToken)
-        {
-            if (Directory.Exists(Path.Combine(rootDir, ".paket")) && File.Exists(Path.Combine(rootDir, ".paket", "paket.exe")))
-            {
-                return Path.Combine(rootDir, ".paket", "paket.exe");
-            }
-
-            var (_, output) = ConsoleHelper.RunDotNetCommand(rootDir, "tool list", cancellationToken);
-
-            if (output.Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
-            {
-                return "dotnet";
-            }
-
-            throw new FileNotFoundException("Unable to locate paket");
         }
     }
 }
