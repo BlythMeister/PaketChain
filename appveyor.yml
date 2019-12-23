@@ -31,3 +31,14 @@ deploy:
   artifact: PaketChain.$(appveyor_build_version).nupkg
   on:
     branch: master
+- provider: GitHub
+  tag: v$(appveyor_build_version)
+  release: v$(appveyor_build_version)
+  description: Release v$(appveyor_build_version)
+  auth_token:
+    secure: g+iWKsE2NIl0nbHRppdKG9viG1Drk5x6U++4dXtMfM9FLyOFqaRafq6qKpkyO9x7
+  repository: BlythMeister/PaketChain
+  artifact: PaketChain.$(appveyor_build_version).nupkg
+  on:
+    branch: master
+
