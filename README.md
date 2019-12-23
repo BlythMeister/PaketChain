@@ -1,7 +1,8 @@
 # Paket Chain
 
-[![AppVeyor branch](https://img.shields.io/appveyor/ci/blythmeister/paketchain)](https://ci.appveyor.com/project/BlythMeister/paketchain)
+[![AppVeyor branch](https://img.shields.io/appveyor/ci/blythmeister/paketchain)](https://ci.appveyor.com/project/BlythMeister/PaketChain)
 [![Nuget](https://img.shields.io/nuget/v/paketchain)](https://www.nuget.org/packages/PaketChain/)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/BlythMeister/PaketChain)](https://github.com/BlythMeister/PaketChain/releases/latest)
 [![GitHub issues](https://img.shields.io/github/issues-raw/blythmeister/paketchain)](https://github.com/BlythMeister/PaketChain/issues)
 
 A command line application call paket in standard folder structures and chain multiple commands together.
