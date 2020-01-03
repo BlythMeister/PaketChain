@@ -92,6 +92,16 @@ namespace PaketChain
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
+            if (runnerArgs.UpdateSelf)
+            {
+                ConsoleHelper.RunDotNetCommand(rootDir, "tool update paketchain --global", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
+                Console.WriteLine("Stopping As Tool Updated");
+                Console.WriteLine("-----------------------------------------------------");
+                if (cancellationToken.IsCancellationRequested) return -2;
+                return 0;
+            }
+
             if (runnerArgs.Sort)
             {
                 Sorter.SortReferences(rootDir);

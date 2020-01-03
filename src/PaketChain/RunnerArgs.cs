@@ -11,6 +11,9 @@ namespace PaketChain
         [Option("-upt|--update-paket-tool", "update the paket tool", CommandOptionType.NoValue)]
         public bool UpdateTool { get; }
 
+        [Option("-upc|--update-paket-chain", "update the paket chain tool", CommandOptionType.NoValue)]
+        public bool UpdateSelf { get; }
+
         [Option("-u|--update", "Include a paket update", CommandOptionType.NoValue)]
         public bool Update { get; }
 
