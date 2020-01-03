@@ -118,18 +118,19 @@ namespace PaketChain
 
             if (runnerArgs.Reinstall)
             {
-                if (runnerArgs.Update)
-                {
-                    Console.WriteLine("Skipping Update as reinstall install newest versions");
-                }
-
                 Console.WriteLine("Deleting paket.lock file");
                 File.Delete(Path.Combine(rootDir, "paket.lock"));
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
-            else if (runnerArgs.Update)
+
+            if (runnerArgs.Update)
             {
+                if (runnerArgs.Reinstall)
+                {
+                    Console.WriteLine("Skipping Update as reinstall install newest versions");
+                }
+
                 ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "update", runnerArgs.UpdateArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
@@ -142,7 +143,7 @@ namespace PaketChain
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
-            if (runnerArgs.Install)
+            if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify)
             {
                 ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", runnerArgs.InstallArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
