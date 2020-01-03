@@ -7,7 +7,7 @@ namespace PaketChain
 {
     internal static class ConsoleHelper
     {
-        public static (int exitCode, List<string> consoleOutput) RunDotNetCommand(string rootDir, string arguments, CancellationToken cancellationToken)
+        public static List<string> RunDotNetCommandWithOutput(string rootDir, string arguments, CancellationToken cancellationToken)
         {
             var processInfo = new ProcessStartInfo
             {
@@ -38,27 +38,60 @@ namespace PaketChain
             process.WaitForExit();
             process.CancelOutputRead();
 
-            return (process.ExitCode, output);
+            if (process.ExitCode < 0)
+            {
+                throw new Exception($"dotnet exit code: {process.ExitCode}");
+            }
+
+            return output;
+        }
+
+        public static void RunDotNetCommand(string rootDir, string arguments, CancellationToken cancellationToken)
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                WorkingDirectory = rootDir,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                FileName = "dotnet",
+                Arguments = arguments
+            };
+
+            var process = new Process
+            {
+                StartInfo = processInfo,
+                EnableRaisingEvents = true
+            };
+
+            process.OutputDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
+            process.ErrorDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
+
+            cancellationToken.Register(() => process.Kill(true));
+
+            Console.WriteLine($"Running: {processInfo.FileName} {processInfo.Arguments}");
+            Console.WriteLine("");
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+            process.CancelOutputRead();
+
+            if (process.ExitCode < 0)
+            {
+                throw new Exception($"dotnet exit code: {process.ExitCode}");
+            }
         }
 
         public static void RunPaketCommand(string rootDir, string paketExePath, PaketType paketType, string command, string args, CancellationToken cancellationToken)
         {
-            var arguments = string.Empty;
-
-            switch (paketType)
+            var arguments = paketType switch
             {
-                case PaketType.Exe:
-                case PaketType.GlobalTool:
-                    arguments = $"{command} {args ?? string.Empty}".Trim();
-                    break;
-
-                case PaketType.LocalTool:
-                    arguments = $"paket {command} {args ?? string.Empty}".Trim();
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(paketType), paketType, null);
-            }
+                PaketType.Exe => $"{command} {args ?? string.Empty}".Trim(),
+                PaketType.GlobalTool => $"{command} {args ?? string.Empty}".Trim(),
+                PaketType.LocalTool => $"paket {command} {args ?? string.Empty}".Trim(),
+                _ => throw new ArgumentOutOfRangeException(nameof(paketType), paketType, null)
+            };
 
             var processInfo = new ProcessStartInfo
             {

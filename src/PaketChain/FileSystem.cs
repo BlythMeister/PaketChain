@@ -37,14 +37,14 @@ namespace PaketChain
                 return (Path.Combine(rootDir, ".paket", "paket.exe"), PaketType.Exe);
             }
 
-            var (_, output) = ConsoleHelper.RunDotNetCommand(rootDir, "tool list", cancellationToken);
+            var output = ConsoleHelper.RunDotNetCommandWithOutput(rootDir, "tool list", cancellationToken);
 
             if (output != null && output.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
             {
                 return ("dotnet", PaketType.LocalTool);
             }
 
-            var (_, outputGlobal) = ConsoleHelper.RunDotNetCommand(rootDir, "tool list --global", cancellationToken);
+            var outputGlobal = ConsoleHelper.RunDotNetCommandWithOutput(rootDir, "tool list --global", cancellationToken);
 
             if (output != null && output.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
             {
