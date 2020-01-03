@@ -23,7 +23,6 @@ Usage: PaketChain [options]
 Options:
   -d|--dir <PATH>             The path to a root of a repository, defaults to current directory if not provided (Note: <PATH> should be in quotes)
   -upt|--update-paket-tool    update the paket tool
-  -upc|--update-paket-chain   update the paket chain tool
   -u|--update                 Include a paket update
   -ua|--update-args <ARGS>    Args to pass to paket update (Note: <ARGS> should be in quotes)
   -co|--clean-obj             Clean obj folders to force a full update
