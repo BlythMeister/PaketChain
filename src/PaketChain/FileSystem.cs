@@ -46,7 +46,7 @@ namespace PaketChain
 
             var outputGlobal = ConsoleHelper.RunDotNetCommandWithOutput(rootDir, "tool list --global", cancellationToken);
 
-            if (output != null && output.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
+            if (outputGlobal != null && outputGlobal.Where(x => x != null).Any(x => x.StartsWith("paket", StringComparison.CurrentCultureIgnoreCase)))
             {
                 return ("paket", PaketType.GlobalTool);
             }

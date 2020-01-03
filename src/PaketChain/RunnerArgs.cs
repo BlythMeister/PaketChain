@@ -1,4 +1,7 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿// ReSharper disable UnassignedGetOnlyAutoProperty
+// ReSharper disable UnusedMember.Local
+
+using McMaster.Extensions.CommandLineUtils;
 using System.Threading;
 
 namespace PaketChain
