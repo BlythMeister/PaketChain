@@ -109,11 +109,26 @@ namespace PaketChain
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
-            if (runnerArgs.CleanObj)
+            if (runnerArgs.GitClean)
             {
-                FileSystem.CleanObjFiles(rootDir);
+                ConsoleHelper.RunGitCommand(rootDir, "clean", "-dfx", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
+            }
+
+            if (runnerArgs.CleanObj)
+            {
+                if (runnerArgs.GitClean)
+                {
+                    Console.WriteLine("Skipping Clean Objects as Git clean run");
+                    Console.WriteLine("-----------------------------------------------------");
+                }
+                else
+                {
+                    FileSystem.CleanObjFiles(rootDir);
+                    Console.WriteLine("-----------------------------------------------------");
+                    if (cancellationToken.IsCancellationRequested) return -2;
+                }
             }
 
             if (runnerArgs.Reinstall)
@@ -129,11 +144,14 @@ namespace PaketChain
                 if (runnerArgs.Reinstall)
                 {
                     Console.WriteLine("Skipping Update as reinstall install newest versions");
+                    Console.WriteLine("-----------------------------------------------------");
                 }
-
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "update", runnerArgs.UpdateArgs, cancellationToken);
-                Console.WriteLine("-----------------------------------------------------");
-                if (cancellationToken.IsCancellationRequested) return -2;
+                else
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "update", runnerArgs.UpdateArgs, cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                    if (cancellationToken.IsCancellationRequested) return -2;
+                }
             }
 
             if (runnerArgs.Simplify)
@@ -148,6 +166,21 @@ namespace PaketChain
                 ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", runnerArgs.InstallArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
+            }
+
+            if (runnerArgs.Restore)
+            {
+                if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify)
+                {
+                    Console.WriteLine("Skipping Restore as already installed");
+                    Console.WriteLine("-----------------------------------------------------");
+                }
+                else
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "restore", runnerArgs.RestoreArgs, cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                    if (cancellationToken.IsCancellationRequested) return -2;
+                }
             }
 
             return 0;

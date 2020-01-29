@@ -22,17 +22,20 @@ Usage: PaketChain [options]
 
 Options:
   -d|--dir <PATH>             The path to a root of a repository, defaults to current directory if not provided (Note: <PATH> should be in quotes)
-  -upt|--update-paket-tool    update the paket tool
-  -u|--update                 Include a paket update
+  -u|--update                 Run a paket update
   -ua|--update-args <ARGS>    Args to pass to paket update (Note: <ARGS> should be in quotes)
-  -co|--clean-obj             Clean obj folders to force a full update
-  -i|--install                Include a paket install
+  -i|--install                Run a paket install
   -ia|--install-args <ARGS>   Args to pass to paket install (Note: <ARGS> should be in quotes)
-  -r|--reinstall              Delete the lock file and create from scratch
-  -s|--simplify               Include a paket simplify
+  -r|--restore                Run a paket restore
+  -ra|--restore-args <ARGS>   Args to pass to paket restore (Note: <ARGS> should be in quotes)
+  -s|--simplify               Run a paket simplify
   -sa|--simplify-args <ARGS>  Args to pass to paket simplify (Note: <ARGS> should be in quotes)
+  -ri|--reinstall             Delete the lock file and create from scratch
   -so|--sort                  Sort paket files alphabetically
   -cc|--clear-cache           Clear caches before running
+  -gc|--git-clean             Run git clean
+  -co|--clean-obj             Clean obj folders to force a full update
+  -upt|--update-paket-tool    update the paket tool
   -np|--no-prompt             Never prompt user input
   -v|--verbose                Verbose logging
   -?|-h|--help                Show help information

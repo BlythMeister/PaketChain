@@ -127,5 +127,42 @@ namespace PaketChain
                 throw new Exception($"Paket exit code: {process.ExitCode}");
             }
         }
+
+        public static void RunGitCommand(string rootDir, string command, string args, CancellationToken cancellationToken)
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                WorkingDirectory = rootDir,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                FileName = "git",
+                Arguments = $"{command} {args ?? string.Empty}".Trim()
+            };
+
+            var process = new Process
+            {
+                StartInfo = processInfo,
+                EnableRaisingEvents = true
+            };
+
+            process.OutputDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
+            process.ErrorDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
+
+            cancellationToken.Register(() => process.Kill(true));
+
+            Console.WriteLine($"Running: {processInfo.FileName} {processInfo.Arguments}");
+            Console.WriteLine("");
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+            process.CancelOutputRead();
+
+            if (process.ExitCode < 0)
+            {
+                throw new Exception($"Git exit code: {process.ExitCode}");
+            }
+        }
     }
 }
