@@ -1,17 +1,16 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace PaketChain
 {
     internal class Program
     {
-        public static async Task<int> Main(string[] args)
+        public static int Main(string[] args)
         {
             try
             {
-                return await CommandLineApplication.ExecuteAsync<RunnerArgs>(args);
+                return CommandLineApplication.Execute<RunnerArgs>(args);
             }
             finally
             {
