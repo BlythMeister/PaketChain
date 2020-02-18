@@ -7,7 +7,7 @@ namespace PaketChain
 {
     internal static class ConsoleHelper
     {
-        public static List<string> RunDotNetCommandWithOutput(string rootDir, string arguments, CancellationToken cancellationToken)
+        public static IReadOnlyCollection<string> RunDotNetCommandWithOutput(string rootDir, string arguments, CancellationToken cancellationToken)
         {
             var processInfo = new ProcessStartInfo
             {
@@ -20,30 +20,7 @@ namespace PaketChain
                 Arguments = arguments
             };
 
-            var process = new Process
-            {
-                StartInfo = processInfo,
-                EnableRaisingEvents = true
-            };
-
-            var output = new List<string>();
-
-            process.OutputDataReceived += (sender, eventArgs) => { output.Add(eventArgs.Data); };
-            process.ErrorDataReceived += (sender, eventArgs) => { output.Add(eventArgs.Data); };
-
-            cancellationToken.Register(() => process.Kill(true));
-
-            process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
-            process.CancelOutputRead();
-
-            if (process.ExitCode < 0)
-            {
-                throw new Exception($"dotnet exit code: {process.ExitCode}");
-            }
-
-            return output;
+            return Run(processInfo, cancellationToken, true);
         }
 
         public static void RunDotNetCommand(string rootDir, string arguments, CancellationToken cancellationToken)
@@ -59,28 +36,7 @@ namespace PaketChain
                 Arguments = arguments
             };
 
-            var process = new Process
-            {
-                StartInfo = processInfo,
-                EnableRaisingEvents = true
-            };
-
-            process.OutputDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
-            process.ErrorDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
-
-            cancellationToken.Register(() => process.Kill(true));
-
-            Console.WriteLine($"Running: {processInfo.FileName} {processInfo.Arguments}");
-            Console.WriteLine("");
-            process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
-            process.CancelOutputRead();
-
-            if (process.ExitCode < 0)
-            {
-                throw new Exception($"dotnet exit code: {process.ExitCode}");
-            }
+            Run(processInfo, cancellationToken);
         }
 
         public static void RunPaketCommand(string rootDir, string paketExePath, PaketType paketType, string command, string args, CancellationToken cancellationToken)
@@ -104,28 +60,7 @@ namespace PaketChain
                 Arguments = arguments
             };
 
-            var process = new Process
-            {
-                StartInfo = processInfo,
-                EnableRaisingEvents = true
-            };
-
-            process.OutputDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
-            process.ErrorDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
-
-            cancellationToken.Register(() => process.Kill(true));
-
-            Console.WriteLine($"Running: {processInfo.FileName} {processInfo.Arguments}");
-            Console.WriteLine("");
-            process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
-            process.CancelOutputRead();
-
-            if (process.ExitCode < 0)
-            {
-                throw new Exception($"Paket exit code: {process.ExitCode}");
-            }
+            Run(processInfo, cancellationToken);
         }
 
         public static void RunGitCommand(string rootDir, string command, string args, CancellationToken cancellationToken)
@@ -141,14 +76,30 @@ namespace PaketChain
                 Arguments = $"{command} {args ?? string.Empty}".Trim()
             };
 
+            Run(processInfo, cancellationToken);
+        }
+
+        private static IReadOnlyCollection<string> Run(ProcessStartInfo processInfo, CancellationToken cancellationToken, bool silent = false)
+        {
             var process = new Process
             {
                 StartInfo = processInfo,
                 EnableRaisingEvents = true
             };
 
-            process.OutputDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
-            process.ErrorDataReceived += (sender, eventArgs) => { Console.WriteLine(eventArgs.Data); };
+            var output = new List<string>();
+
+            void ProcessDataReceived(object sender, DataReceivedEventArgs dataReceivedEventArgs)
+            {
+                if (!silent)
+                {
+                    Console.WriteLine(dataReceivedEventArgs.Data);
+                }
+                output.Add(dataReceivedEventArgs.Data);
+            }
+
+            process.OutputDataReceived += ProcessDataReceived;
+            process.ErrorDataReceived += ProcessDataReceived;
 
             cancellationToken.Register(() => process.Kill(true));
 
@@ -156,13 +107,16 @@ namespace PaketChain
             Console.WriteLine("");
             process.Start();
             process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
             process.WaitForExit();
             process.CancelOutputRead();
 
-            if (process.ExitCode < 0)
+            if (process.ExitCode != 0)
             {
-                throw new Exception($"Git exit code: {process.ExitCode}");
+                throw new Exception($"'{processInfo.FileName} {processInfo.Arguments}' exit code: {process.ExitCode}");
             }
+
+            return output;
         }
     }
 }
