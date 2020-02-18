@@ -98,8 +98,25 @@ namespace PaketChain
                 output.Add(dataReceivedEventArgs.Data);
             }
 
-            process.OutputDataReceived += ProcessDataReceived;
-            process.ErrorDataReceived += ProcessDataReceived;
+            process.OutputDataReceived += (sender, args) =>
+            {
+                if (!silent)
+                {
+                    Console.WriteLine(args.Data);
+                }
+                output.Add(args.Data);
+            };
+
+            process.ErrorDataReceived += (sender, args) =>
+            {
+                if (!silent)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(args.Data);
+                    Console.ResetColor();
+                }
+                output.Add(args.Data);
+            };
 
             cancellationToken.Register(() => process.Kill(true));
 
