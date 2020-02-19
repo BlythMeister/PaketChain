@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 
 namespace PaketChain
@@ -10,11 +12,14 @@ namespace PaketChain
         {
             try
             {
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var version = FileVersionInfo.GetVersionInfo(assemblyLocation).ProductVersion;
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("");
                 Console.WriteLine("----------------------------");
                 Console.WriteLine("|                          |");
                 Console.WriteLine("|        Paket Chain       |");
+                Console.WriteLine($"|{version.PadLeft(10 + version.Length).PadRight(26)}|");
                 Console.WriteLine("|                          |");
                 Console.WriteLine("|    Author: Chris Blyth   |");
                 Console.WriteLine("|                          |");
