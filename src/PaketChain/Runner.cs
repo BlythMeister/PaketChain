@@ -70,12 +70,15 @@ namespace PaketChain
             Console.WriteLine("-----------------------------------------------------");
             if (cancellationToken.IsCancellationRequested) return -2;
 
-            Console.WriteLine("Running tool restore");
-            ConsoleHelper.RunDotNetCommand(rootDir, "tool restore", cancellationToken);
-            Console.WriteLine("-----------------------------------------------------");
-            if (cancellationToken.IsCancellationRequested) return -2;
-
             var (paketPath, toolType) = FileSystem.LocatePaketFilePath(rootDir, cancellationToken);
+
+            if (toolType == PaketType.LocalTool)
+            {
+                Console.WriteLine("Running tool restore");
+                ConsoleHelper.RunDotNetCommand(rootDir, "tool restore", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
+                if (cancellationToken.IsCancellationRequested) return -2;
+            }
 
             if (runnerArgs.UpdateTool)
             {
