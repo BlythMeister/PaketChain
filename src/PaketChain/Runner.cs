@@ -164,6 +164,13 @@ namespace PaketChain
 
             if (runnerArgs.Simplify)
             {
+                if (runnerArgs.Reinstall)
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", runnerArgs.InstallArgs, cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                    if (cancellationToken.IsCancellationRequested) return -2;
+                }
+
                 ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "simplify", runnerArgs.SimplifyArgs, cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
