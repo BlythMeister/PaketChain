@@ -127,6 +127,7 @@ namespace PaketChain
             process.BeginErrorReadLine();
             process.WaitForExit();
             process.CancelOutputRead();
+            process.CancelErrorRead();
 
             if (process.ExitCode != 0)
             {
