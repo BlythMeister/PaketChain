@@ -113,7 +113,7 @@ namespace PaketChain
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(args.Data);
-                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 output.Add(args.Data);
             };

@@ -27,11 +27,12 @@ namespace PaketChain
                 Console.WriteLine("");
                 Console.WriteLine($"Starting at {DateTime.UtcNow:u}");
                 Console.WriteLine("");
-                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.White;
                 return Run(runnerArgs, cancellationToken);
             }
             catch (Exception e)
             {
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("-----------------------------------------------------");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("An Error Occured:");
@@ -45,7 +46,7 @@ namespace PaketChain
                     Console.WriteLine(e.Message);
                 }
                 Console.WriteLine("");
-                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("-----------------------------------------------------");
                 return -1;
             }
@@ -58,7 +59,6 @@ namespace PaketChain
                     Console.WriteLine("Press Enter To Close...");
                     Console.ReadLine();
                 }
-                Console.ResetColor();
             }
         }
 
