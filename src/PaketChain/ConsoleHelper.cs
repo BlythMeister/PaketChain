@@ -7,14 +7,14 @@ namespace PaketChain
 {
     internal static class ConsoleHelper
     {
-        public static IReadOnlyCollection<string> RunDotNetCommandWithOutput(string rootDir, string arguments, CancellationToken cancellationToken)
+        public static IReadOnlyCollection<string> RunDotNetToolCommandWithOutput(string rootDir, string arguments, CancellationToken cancellationToken)
         {
-            return RunReturnOutput(rootDir, "dotnet", arguments, cancellationToken);
+            return RunReturnOutput(rootDir, "dotnet", $"tool {arguments}", cancellationToken);
         }
 
-        public static void RunDotNetCommand(string rootDir, string arguments, CancellationToken cancellationToken)
+        public static void RunDotNetToolCommand(string rootDir, string arguments, CancellationToken cancellationToken)
         {
-            Run(rootDir, "dotnet", arguments, cancellationToken);
+            Run(rootDir, "dotnet", $"tool {arguments}", cancellationToken);
         }
 
         public static void RunPaketCommand(string rootDir, string paketExePath, PaketType paketType, string command, string args, CancellationToken cancellationToken)
