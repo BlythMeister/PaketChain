@@ -9,34 +9,12 @@ namespace PaketChain
     {
         public static IReadOnlyCollection<string> RunDotNetCommandWithOutput(string rootDir, string arguments, CancellationToken cancellationToken)
         {
-            var processInfo = new ProcessStartInfo
-            {
-                WorkingDirectory = rootDir,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                FileName = "dotnet",
-                Arguments = arguments
-            };
-
-            return Run(processInfo, cancellationToken, true);
+            return RunReturnOutput(rootDir, "dotnet", arguments, cancellationToken);
         }
 
         public static void RunDotNetCommand(string rootDir, string arguments, CancellationToken cancellationToken)
         {
-            var processInfo = new ProcessStartInfo
-            {
-                WorkingDirectory = rootDir,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                FileName = "dotnet",
-                Arguments = arguments
-            };
-
-            Run(processInfo, cancellationToken);
+            Run(rootDir, "dotnet", arguments, cancellationToken);
         }
 
         public static void RunPaketCommand(string rootDir, string paketExePath, PaketType paketType, string command, string args, CancellationToken cancellationToken)
@@ -49,78 +27,76 @@ namespace PaketChain
                 _ => throw new ArgumentOutOfRangeException(nameof(paketType), paketType, null)
             };
 
-            var processInfo = new ProcessStartInfo
-            {
-                WorkingDirectory = rootDir,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                FileName = paketExePath,
-                Arguments = arguments
-            };
-
-            Run(processInfo, cancellationToken);
+            Run(rootDir, paketExePath, arguments, cancellationToken);
         }
 
         public static void RunGitCommand(string rootDir, string command, string args, CancellationToken cancellationToken)
         {
+            Run(rootDir, "git", $"{command} {args ?? string.Empty}".Trim(), cancellationToken);
+        }
+
+        private static void Run(string rootDir, string fileName, string arguments, CancellationToken cancellationToken)
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                WorkingDirectory = rootDir,
+                FileName = fileName,
+                Arguments = arguments
+            };
+
+            var process = new Process
+            {
+                StartInfo = processInfo
+            };
+
+            cancellationToken.Register(() => process.Kill(true));
+
+            Console.WriteLine($"Running: {fileName} {arguments}");
+            Console.WriteLine("");
+            process.Start();
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"'{fileName} {arguments}' exit code: {process.ExitCode}");
+            }
+        }
+
+        private static IReadOnlyCollection<string> RunReturnOutput(string rootDir, string fileName, string arguments, CancellationToken cancellationToken)
+        {
+            var output = new List<string>();
+
             var processInfo = new ProcessStartInfo
             {
                 WorkingDirectory = rootDir,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                RedirectStandardInput = true,
                 CreateNoWindow = true,
-                FileName = "git",
-                Arguments = $"{command} {args ?? string.Empty}".Trim()
+                FileName = fileName,
+                Arguments = arguments
             };
 
-            Run(processInfo, cancellationToken);
-        }
-
-        private static IReadOnlyCollection<string> Run(ProcessStartInfo processInfo, CancellationToken cancellationToken, bool silent = false)
-        {
             var process = new Process
             {
                 StartInfo = processInfo,
                 EnableRaisingEvents = true
             };
 
-            var output = new List<string>();
-
-            void ProcessDataReceived(object sender, DataReceivedEventArgs dataReceivedEventArgs)
-            {
-                if (!silent)
-                {
-                    Console.WriteLine(dataReceivedEventArgs.Data);
-                }
-                output.Add(dataReceivedEventArgs.Data);
-            }
-
             process.OutputDataReceived += (sender, args) =>
             {
-                if (!silent)
-                {
-                    Console.WriteLine(args.Data);
-                }
                 output.Add(args.Data);
             };
 
             process.ErrorDataReceived += (sender, args) =>
             {
-                if (!silent)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(args.Data);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
                 output.Add(args.Data);
             };
 
             cancellationToken.Register(() => process.Kill(true));
 
-            Console.WriteLine($"Running: {processInfo.FileName} {processInfo.Arguments}");
+            Console.WriteLine($"Running: {fileName} {arguments}");
             Console.WriteLine("");
             process.Start();
             process.BeginOutputReadLine();
@@ -131,7 +107,7 @@ namespace PaketChain
 
             if (process.ExitCode != 0)
             {
-                throw new Exception($"'{processInfo.FileName} {processInfo.Arguments}' exit code: {process.ExitCode}");
+                throw new Exception($"'{fileName} {arguments}' exit code: {process.ExitCode}");
             }
 
             return output;
