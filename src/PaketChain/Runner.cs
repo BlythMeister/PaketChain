@@ -55,7 +55,7 @@ namespace PaketChain
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"Done at {DateTime.UtcNow:u}");
-                if (!runnerArgs.NoPrompt && !Debugger.IsAttached)
+                if (runnerArgs.PromptClose && !Debugger.IsAttached)
                 {
                     Console.WriteLine("Press Enter To Close...");
                     Console.ReadLine();
@@ -101,39 +101,55 @@ namespace PaketChain
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
-            if (!string.IsNullOrWhiteSpace(runnerArgs.AddPackage))
+            var paketRedirectArgs = runnerArgs.Redirects ? "--redirects --create-new-binding-files --clean-redirects" : "";
+            var paketForceArgs = runnerArgs.Force ? "--force" : "";
+            var paketVerboseArgs = runnerArgs.Verbose ? "--verbose" : "";
+
+            if (!string.IsNullOrWhiteSpace(runnerArgs.AddPackageInteractive))
+            {
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} --interactive {paketRedirectArgs} {paketForceArgs} {paketVerboseArgs} {runnerArgs.AddAdditionalArgs}", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
+                if (cancellationToken.IsCancellationRequested) return -2;
+            }
+            else if (!string.IsNullOrWhiteSpace(runnerArgs.AddPackage))
             {
                 if (runnerArgs.AddProjects != null && runnerArgs.AddProjects.Any(x => !string.IsNullOrWhiteSpace(x)))
                 {
                     foreach (var addProject in runnerArgs.AddProjects.Where(x => !string.IsNullOrWhiteSpace(x)))
                     {
-                        ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} --project {addProject} {runnerArgs.AddAdditionalArgs}", cancellationToken);
+                        ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} --project {addProject} {paketRedirectArgs} {paketForceArgs} {paketVerboseArgs} {runnerArgs.AddAdditionalArgs}", cancellationToken);
                         Console.WriteLine("-----------------------------------------------------");
                         if (cancellationToken.IsCancellationRequested) return -2;
                     }
                 }
                 else
                 {
-                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} {runnerArgs.AddAdditionalArgs}", cancellationToken);
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} {paketRedirectArgs} {paketForceArgs} {paketVerboseArgs} {runnerArgs.AddAdditionalArgs}", cancellationToken);
                     Console.WriteLine("-----------------------------------------------------");
                     if (cancellationToken.IsCancellationRequested) return -2;
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(runnerArgs.RemovePackage))
+            if (!string.IsNullOrWhiteSpace(runnerArgs.RemovePackageInteractive))
+            {
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} --interactive {paketForceArgs} {paketVerboseArgs} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
+                if (cancellationToken.IsCancellationRequested) return -2;
+            }
+            else if (!string.IsNullOrWhiteSpace(runnerArgs.RemovePackage))
             {
                 if (runnerArgs.RemoveProjects != null && runnerArgs.RemoveProjects.Any(x => !string.IsNullOrWhiteSpace(x)))
                 {
                     foreach (var removeProject in runnerArgs.RemoveProjects.Where(x => !string.IsNullOrWhiteSpace(x)))
                     {
-                        ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} --project {removeProject} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
+                        ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} --project {removeProject} {paketForceArgs} {paketVerboseArgs} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
                         Console.WriteLine("-----------------------------------------------------");
                         if (cancellationToken.IsCancellationRequested) return -2;
                     }
                 }
                 else
                 {
-                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} {paketForceArgs} {paketVerboseArgs} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
                     Console.WriteLine("-----------------------------------------------------");
                     if (cancellationToken.IsCancellationRequested) return -2;
                 }
@@ -151,7 +167,7 @@ namespace PaketChain
 
             if (runnerArgs.ClearCache)
             {
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "clear-cache", "--clear-local", cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "clear-cache", $"--clear-local {paketVerboseArgs}", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
@@ -195,7 +211,7 @@ namespace PaketChain
                 }
                 else
                 {
-                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "update", runnerArgs.UpdateArgs, cancellationToken);
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "update", $"{paketRedirectArgs} {paketForceArgs} {paketVerboseArgs} {runnerArgs.UpdateArgs}", cancellationToken);
                     Console.WriteLine("-----------------------------------------------------");
                     if (cancellationToken.IsCancellationRequested) return -2;
                 }
@@ -205,19 +221,19 @@ namespace PaketChain
             {
                 if (runnerArgs.Reinstall)
                 {
-                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", runnerArgs.InstallArgs, cancellationToken);
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", $"{paketRedirectArgs} {paketForceArgs} {paketVerboseArgs} {runnerArgs.InstallArgs}", cancellationToken);
                     Console.WriteLine("-----------------------------------------------------");
                     if (cancellationToken.IsCancellationRequested) return -2;
                 }
 
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "simplify", runnerArgs.SimplifyArgs, cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "simplify", $"{paketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
 
             if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify)
             {
-                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", runnerArgs.InstallArgs, cancellationToken);
+                ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "install", $"{paketRedirectArgs} {paketForceArgs} {paketVerboseArgs} {runnerArgs.InstallArgs}", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
             }
@@ -231,7 +247,7 @@ namespace PaketChain
                 }
                 else
                 {
-                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "restore", runnerArgs.RestoreArgs, cancellationToken);
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "restore", $"{paketForceArgs} {paketVerboseArgs} {runnerArgs.RestoreArgs}", cancellationToken);
                     Console.WriteLine("-----------------------------------------------------");
                     if (cancellationToken.IsCancellationRequested) return -2;
                 }

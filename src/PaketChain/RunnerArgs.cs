@@ -26,6 +26,9 @@ namespace PaketChain
         [Option("-a|--add <PackageName>", "Run a paket add for package", CommandOptionType.SingleValue)]
         public string AddPackage { get; }
 
+        [Option("-ai|--add-interactive <PackageName>", "Run a paket add for package interactive mode", CommandOptionType.SingleValue)]
+        public string AddPackageInteractive { get; }
+
         [Option("-ap|--add-project <ProjectName>", "Projects to add package to. (Requires -a/--add with package)", CommandOptionType.MultipleValue)]
         public string[] AddProjects { get; }
 
@@ -34,6 +37,9 @@ namespace PaketChain
 
         [Option("-re|--remove <PackageName>", "Run a paket remove for package", CommandOptionType.SingleValue)]
         public string RemovePackage { get; }
+
+        [Option("-rei|--remove-interactive <PackageName>", "Run a paket remove for package interactive mode", CommandOptionType.SingleValue)]
+        public string RemovePackageInteractive { get; }
 
         [Option("-rep|--remove-project <ProjectName>", "Projects to remove package from. (Requires -re/--remove with package) (Note: can be used multiple times for multiple projects)", CommandOptionType.MultipleValue)]
         public string[] RemoveProjects { get; }
@@ -53,6 +59,9 @@ namespace PaketChain
         [Option("-sa|--simplify-args <ARGS>", "Args to pass to paket simplify (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
         public string SimplifyArgs { get; }
 
+        [Option("-rd|--redirects", "Add args for redirects on install/update/add", CommandOptionType.NoValue)]
+        public bool Redirects { get; }
+
         [Option("-ri|--reinstall", "Delete the lock file and create from scratch", CommandOptionType.NoValue)]
         public bool Reinstall { get; }
 
@@ -65,14 +74,17 @@ namespace PaketChain
         [Option("-gc|--git-clean", "Run git clean", CommandOptionType.NoValue)]
         public bool GitClean { get; }
 
-        [Option("-co|--clean-obj", "Clean obj folders to force a full update", CommandOptionType.NoValue)]
+        [Option("-co|--clean-obj", "Clean obj folders to force a full restore", CommandOptionType.NoValue)]
         public bool CleanObj { get; }
 
         [Option("-upt|--update-paket-tool", "update the paket tool", CommandOptionType.NoValue)]
         public bool UpdateTool { get; }
 
-        [Option("-np|--no-prompt", "Never prompt user input", CommandOptionType.NoValue)]
-        public bool NoPrompt { get; }
+        [Option("-f|--force", "Include force", CommandOptionType.NoValue)]
+        public bool Force { get; }
+
+        [Option("-pc|--prompt-close", "Prompt user input", CommandOptionType.NoValue)]
+        public bool PromptClose { get; }
 
         [Option("-v|--verbose", "Verbose logging", CommandOptionType.NoValue)]
         public bool Verbose { get; }
