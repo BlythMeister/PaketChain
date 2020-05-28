@@ -23,6 +23,7 @@ Usage: PaketChain [options]
 Options:
   -d|--dir <PATH>                          The path to a root of a repository, defaults to current directory if not provided (Note: <PATH> should be in quotes)
   -u|--update                              Run a paket update
+  -up|--update-package <PackageName>       Run a paket update for a single package
   -ua|--update-args <ARGS>                 Args to pass to paket update (Note: <ARGS> should be in quotes)
   -i|--install                             Run a paket install
   -ia|--install-args <ARGS>                Args to pass to paket install (Note: <ARGS> should be in quotes)
@@ -37,6 +38,7 @@ Options:
   -r|--restore                             Run a paket restore
   -ra|--restore-args <ARGS>                Args to pass to paket restore (Note: <ARGS> should be in quotes)
   -s|--simplify                            Run a paket simplify
+  -si|--simplify-interactive               Run a paket simplify interactive mode
   -sa|--simplify-args <ARGS>               Args to pass to paket simplify (Note: <ARGS> should be in quotes)
   -rd|--redirects                          Add args for redirects on install/update/add
   -ri|--reinstall                          Delete the lock file and create from scratch

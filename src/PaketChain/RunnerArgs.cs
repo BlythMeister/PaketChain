@@ -14,6 +14,9 @@ namespace PaketChain
         [Option("-u|--update", "Run a paket update", CommandOptionType.NoValue)]
         public bool Update { get; }
 
+        [Option("-up|--update-package <PackageName>", "Run a paket update for a single package", CommandOptionType.SingleValue)]
+        public string UpdatePackage { get; }
+
         [Option("-ua|--update-args <ARGS>", "Args to pass to paket update (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
         public string UpdateArgs { get; }
 
@@ -55,6 +58,9 @@ namespace PaketChain
 
         [Option("-s|--simplify", "Run a paket simplify", CommandOptionType.NoValue)]
         public bool Simplify { get; }
+
+        [Option("-si|--simplify-interactive", "Run a paket simplify interactive mode", CommandOptionType.NoValue)]
+        public bool SimplifyInteractive { get; }
 
         [Option("-sa|--simplify-args <ARGS>", "Args to pass to paket simplify (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
         public string SimplifyArgs { get; }

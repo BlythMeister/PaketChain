@@ -264,30 +264,39 @@ namespace PaketChain
 
         private static void PaketUpdate(RunnerArgs runnerArgs, CancellationToken cancellationToken, string rootDir, PaketInfo paketInfo, AdditionalArgs additionalArgs)
         {
-            if (runnerArgs.Update)
+            if ((!string.IsNullOrWhiteSpace(runnerArgs.UpdatePackage) || runnerArgs.Update) && runnerArgs.Reinstall)
             {
-                if (runnerArgs.Reinstall)
-                {
-                    Console.WriteLine("Skipping Update as reinstall install newest versions");
-                    Console.WriteLine("-----------------------------------------------------");
-                }
-                else
-                {
-                    ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "update", $"{additionalArgs.PaketRedirectArgs} {additionalArgs.PaketForceArgs} {additionalArgs.PaketVerboseArgs} {runnerArgs.UpdateArgs}", cancellationToken);
-                    Console.WriteLine("-----------------------------------------------------");
-                }
+                Console.WriteLine("Skipping Update as reinstall install newest versions");
+                Console.WriteLine("-----------------------------------------------------");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(runnerArgs.UpdatePackage))
+            {
+                ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "update", $"{runnerArgs.UpdatePackage} {additionalArgs.PaketRedirectArgs} {additionalArgs.PaketForceArgs} {additionalArgs.PaketVerboseArgs} {runnerArgs.UpdateArgs}", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
+            }
+            else if (runnerArgs.Update)
+            {
+                ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "update", $"{additionalArgs.PaketRedirectArgs} {additionalArgs.PaketForceArgs} {additionalArgs.PaketVerboseArgs} {runnerArgs.UpdateArgs}", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
             }
         }
 
         private static void PaketSimplify(RunnerArgs runnerArgs, CancellationToken cancellationToken, string rootDir, PaketInfo paketInfo, AdditionalArgs additionalArgs)
         {
-            if (runnerArgs.Simplify)
+            if ((runnerArgs.SimplifyInteractive || runnerArgs.Simplify) && runnerArgs.Reinstall)
             {
-                if (runnerArgs.Reinstall)
-                {
-                    PaketInstall(runnerArgs, cancellationToken, rootDir, paketInfo, additionalArgs);
-                }
+                PaketInstall(runnerArgs, cancellationToken, rootDir, paketInfo, additionalArgs);
+            }
 
+            if (runnerArgs.SimplifyInteractive)
+            {
+                ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "simplify", $"--interactive {additionalArgs.PaketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
+                Console.WriteLine("-----------------------------------------------------");
+            }
+            else if (runnerArgs.Simplify)
+            {
                 ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "simplify", $"{additionalArgs.PaketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
             }
@@ -295,7 +304,7 @@ namespace PaketChain
 
         private static void PaketInstall(RunnerArgs runnerArgs, CancellationToken cancellationToken, string rootDir, PaketInfo paketInfo, AdditionalArgs additionalArgs)
         {
-            if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify)
+            if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify || runnerArgs.SimplifyInteractive)
             {
                 ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "install", $"{additionalArgs.PaketRedirectArgs} {additionalArgs.PaketForceArgs} {additionalArgs.PaketVerboseArgs} {runnerArgs.InstallArgs}", cancellationToken);
                 Console.WriteLine("-----------------------------------------------------");
@@ -306,7 +315,7 @@ namespace PaketChain
         {
             if (runnerArgs.Restore)
             {
-                if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify)
+                if (runnerArgs.Install || runnerArgs.Reinstall || runnerArgs.Simplify || runnerArgs.SimplifyInteractive)
                 {
                     Console.WriteLine("Skipping Restore as already installed");
                     Console.WriteLine("-----------------------------------------------------");
