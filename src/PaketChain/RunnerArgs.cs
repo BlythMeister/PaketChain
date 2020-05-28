@@ -23,6 +23,24 @@ namespace PaketChain
         [Option("-ia|--install-args <ARGS>", "Args to pass to paket install (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
         public string InstallArgs { get; }
 
+        [Option("-a|--add <PackageName>", "Run a paket add for package", CommandOptionType.SingleValue)]
+        public string AddPackage { get; }
+
+        [Option("-ap|--add-project <ProjectName>", "Projects to add package to. (Requires -a/--add with package)", CommandOptionType.MultipleValue)]
+        public string[] AddProjects { get; }
+
+        [Option("-aa|--add-args <ARGS>", "Args to pass to paket add (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
+        public string AddAdditionalArgs { get; }
+
+        [Option("-re|--remove <PackageName>", "Run a paket remove for package", CommandOptionType.SingleValue)]
+        public string RemovePackage { get; }
+
+        [Option("-rep|--remove-project <ProjectName>", "Projects to remove package from. (Requires -re/--remove with package) (Note: can be used multiple times for multiple projects)", CommandOptionType.MultipleValue)]
+        public string[] RemoveProjects { get; }
+
+        [Option("-rea|--remove-args <ARGS>", "Args to pass to paket remove (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
+        public string RemoveAdditionalArgs { get; }
+
         [Option("-r|--restore", "Run a paket restore", CommandOptionType.NoValue)]
         public bool Restore { get; }
 

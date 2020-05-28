@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 
@@ -54,7 +55,7 @@ namespace PaketChain
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"Done at {DateTime.UtcNow:u}");
-                if (!runnerArgs.NoPrompt)
+                if (!runnerArgs.NoPrompt && !Debugger.IsAttached)
                 {
                     Console.WriteLine("Press Enter To Close...");
                     Console.ReadLine();
@@ -98,6 +99,44 @@ namespace PaketChain
                 }
                 Console.WriteLine("-----------------------------------------------------");
                 if (cancellationToken.IsCancellationRequested) return -2;
+            }
+
+            if (!string.IsNullOrWhiteSpace(runnerArgs.AddPackage))
+            {
+                if (runnerArgs.AddProjects != null && runnerArgs.AddProjects.Any(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    foreach (var addProject in runnerArgs.AddProjects.Where(x => !string.IsNullOrWhiteSpace(x)))
+                    {
+                        ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} --project {addProject} {runnerArgs.AddAdditionalArgs}", cancellationToken);
+                        Console.WriteLine("-----------------------------------------------------");
+                        if (cancellationToken.IsCancellationRequested) return -2;
+                    }
+                }
+                else
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "add", $"{runnerArgs.AddPackage} {runnerArgs.AddAdditionalArgs}", cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                    if (cancellationToken.IsCancellationRequested) return -2;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(runnerArgs.RemovePackage))
+            {
+                if (runnerArgs.RemoveProjects != null && runnerArgs.RemoveProjects.Any(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    foreach (var removeProject in runnerArgs.RemoveProjects.Where(x => !string.IsNullOrWhiteSpace(x)))
+                    {
+                        ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} --project {removeProject} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
+                        Console.WriteLine("-----------------------------------------------------");
+                        if (cancellationToken.IsCancellationRequested) return -2;
+                    }
+                }
+                else
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketPath, toolType, "remove", $"{runnerArgs.RemovePackage} {runnerArgs.RemoveAdditionalArgs}", cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                    if (cancellationToken.IsCancellationRequested) return -2;
+                }
             }
 
             if (runnerArgs.Sort)
