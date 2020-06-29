@@ -40,7 +40,7 @@ Options:
   -s|--simplify                            Run a paket simplify
   -si|--simplify-interactive               Run a paket simplify interactive mode
   -sa|--simplify-args <ARGS>               Args to pass to paket simplify (Note: <ARGS> should be in quotes)
-  -rd|--redirects                          Add args for redirects on install/update/add
+  -rd|--redirects                          Force redirects on install/update/add
   -ri|--reinstall                          Delete the lock file and create from scratch
   -so|--sort                               Sort paket files alphabetically
   -cc|--clear-cache                        Clear caches before running

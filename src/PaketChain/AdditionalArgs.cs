@@ -9,7 +9,7 @@
 
         public AdditionalArgs(RunnerArgs runnerArgs)
         {
-            PaketRedirectArgs = runnerArgs.Redirects ? "--redirects --create-new-binding-files --clean-redirects" : "";
+            PaketRedirectArgs = runnerArgs.Redirects ? "--redirects --create-new-binding-files --clean-redirects" : "--create-new-binding-files --clean-redirects";
             PaketForceArgs = runnerArgs.Force ? "--force" : "";
             PaketVerboseArgs = runnerArgs.Verbose ? "--verbose" : "";
             DotnetVerboseArgs = runnerArgs.Verbose ? "--verbosity d" : "";

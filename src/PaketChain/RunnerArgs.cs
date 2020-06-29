@@ -65,7 +65,7 @@ namespace PaketChain
         [Option("-sa|--simplify-args <ARGS>", "Args to pass to paket simplify (Note: <ARGS> should be in quotes)", CommandOptionType.SingleValue)]
         public string SimplifyArgs { get; }
 
-        [Option("-rd|--redirects", "Add args for redirects on install/update/add", CommandOptionType.NoValue)]
+        [Option("-rd|--redirects", "Force redirects on install/update/add", CommandOptionType.NoValue)]
         public bool Redirects { get; }
 
         [Option("-ri|--reinstall", "Delete the lock file and create from scratch", CommandOptionType.NoValue)]
