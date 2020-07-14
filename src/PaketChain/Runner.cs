@@ -285,20 +285,25 @@ namespace PaketChain
 
         private static void PaketSimplify(RunnerArgs runnerArgs, CancellationToken cancellationToken, string rootDir, PaketInfo paketInfo, AdditionalArgs additionalArgs)
         {
-            if ((runnerArgs.SimplifyInteractive || runnerArgs.Simplify) && runnerArgs.Reinstall)
+            if (runnerArgs.SimplifyInteractive || runnerArgs.Simplify)
             {
-                PaketInstall(runnerArgs, cancellationToken, rootDir, paketInfo, additionalArgs);
-            }
+                if (runnerArgs.Reinstall || (string.IsNullOrWhiteSpace(runnerArgs.UpdatePackage) && !runnerArgs.Update))
+                {
+                    Console.WriteLine("Need to install before we can simplify");
+                    Console.WriteLine("-----------------------------------------------------");
+                    PaketInstall(runnerArgs, cancellationToken, rootDir, paketInfo, additionalArgs);
+                }
 
-            if (runnerArgs.SimplifyInteractive)
-            {
-                ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "simplify", $"--interactive {additionalArgs.PaketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
-                Console.WriteLine("-----------------------------------------------------");
-            }
-            else if (runnerArgs.Simplify)
-            {
-                ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "simplify", $"{additionalArgs.PaketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
-                Console.WriteLine("-----------------------------------------------------");
+                if (runnerArgs.SimplifyInteractive)
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "simplify", $"--interactive {additionalArgs.PaketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                }
+                else if (runnerArgs.Simplify)
+                {
+                    ConsoleHelper.RunPaketCommand(rootDir, paketInfo.PaketPath, paketInfo.ToolType, "simplify", $"{additionalArgs.PaketVerboseArgs} {runnerArgs.SimplifyArgs}", cancellationToken);
+                    Console.WriteLine("-----------------------------------------------------");
+                }
             }
         }
 
