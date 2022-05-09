@@ -21,7 +21,7 @@ See https://github.com/BlythMeister/PaketChain for usages</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/BlythMeister/PaketChain</PackageProjectUrl>
+    <PackageProjectUrl>https://paket-chain.blyth.me.uk</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\.assets\logo.png">
